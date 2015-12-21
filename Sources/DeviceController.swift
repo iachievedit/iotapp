@@ -25,14 +25,14 @@ final class DeviceController {
 
     // TODO:  Implement creating streams
     var streamName:String
-    if let _streams = json["streams"] {
-      if let __streams = _streams.arrayValue {
-        for s in __streams {
-          streamName = s["name"]!.stringValue!
-          let stream = streams.insert(streamName, deviceId:device.id)
-          device.addStream(stream)
-        }
-      }
+    guard let streams = json["streams"]?.arrayValue else {
+      return Response(status:.BadRequest)
+    }
+
+    for s in streams {
+      streamName = s["name"]!.stringValue!
+      let stream = self.streams.insert(streamName, deviceId:device.id)
+      device.addStream(stream)
     }
     
     return Response(status:.OK, json:device.toJSON())
