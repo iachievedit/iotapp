@@ -6,7 +6,7 @@ let streamController = StreamController()
 
 final class StreamController {
 
-  let streams = try! StreamRepository()
+  let streams = try! StreamRecord()
 
   func create(request:Request) -> Response {
     return Response(status:.BadRequest)

@@ -2,7 +2,7 @@ import PostgreSQL
 import CLibpq
 import Foundation
 
-final class StreamRepository {
+final class StreamRecord {
 
   let db = Connection("postgresql://iotuser:iotuser@localhost/iot_staging")
 
@@ -25,6 +25,19 @@ final class StreamRepository {
     logmsg("stream inserted with id \(id)")
     return Stream(id:id, name:name)
            
+  }
+
+  func findByName(name:String, deviceId:String) -> Stream? {
+    let stmt = "SELECT * from streams where name = '\(name)' and device_id = '\(deviceId)'"
+    logmsg("\(stmt)")
+
+    let result = try! db.execute(stmt)
+    
+    if result.count > 0 {
+        return Stream(id:result[0]["id"]!.string!,
+                      name:result[0]["name"]!.string!)
+    }
+    return nil
   }
 
 }

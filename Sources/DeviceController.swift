@@ -6,8 +6,8 @@ let deviceController = DeviceController()
 
 final class DeviceController {
 
-  let devices = try! DeviceRepository()
-  let streams = try! StreamRepository()
+  let devices = try! DeviceRecord()
+  let streams = try! StreamRecord()
 
   func create(request:Request) -> Response {
     guard let json = request.JSONBody, name = json["name"]?.stringValue, serial = json["serial"]?.stringValue else {

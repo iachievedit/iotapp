@@ -2,7 +2,7 @@ import PostgreSQL
 import CLibpq
 import Foundation
 
-final class DeviceRepository {
+final class DeviceRecord {
 
   let db = Connection("postgresql://iotuser:iotuser@localhost/iot_staging")
 
@@ -26,6 +26,7 @@ final class DeviceRepository {
     return Device(id:id, name:name, serial:serial, location:location)
   }
 
+  // Retrieval methods
   subscript(id:String) -> Device? {
     get {
       logmsg("get device[\(id)]")
@@ -38,6 +39,22 @@ final class DeviceRepository {
       }
       return nil
     }
+  }
+
+  func findBySerial(serial:String) -> Device? {
+
+    let stmt   = "SELECT * from devices where serial = '\(serial)'"
+    
+    logmsg(stmt)
+    
+    let result = try! db.execute(stmt)
+    if result.count > 0 {
+        return Device(id:result[0]["id"]!.string!,
+                      name:result[0]["name"]!.string!,
+                      serial:result[0]["serial"]!.string!,
+                      location:ZERO_POINT)
+    }
+    return nil
   }
 
 }
