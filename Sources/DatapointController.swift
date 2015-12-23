@@ -41,19 +41,6 @@ final class DatapointController {
 
   }
   
-
-  /*
-  func show(request:Request) -> Response {
-
-    guard let id = request.parameters["id"], device = devices[id] else {
-      return Response(status:.NotFound)
-    }
-    
-    return Response(status:.BadRequest)
-
-  }
-  */
-
   func index(request:Request) -> Response {
     logmsg("ENTRY")
 
@@ -69,8 +56,11 @@ final class DatapointController {
     }
 
     let values = datapoints.findByStream(stream.id, count:10)
+    let jsonValues = [
+      "datapoints":JSON.from(values)
+    ]
 
-    return Response(status:.OK, json:JSON.from(values))
+    return Response(status:.OK, json:JSON.from(jsonValues))
   
   }
 
