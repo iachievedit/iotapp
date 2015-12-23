@@ -21,13 +21,15 @@ final class DeviceController {
       location["longitude"] = _location["longitude"]!.doubleValue! 
     }
     
-    let device = devices.insert(name, serial:serial, location:location)
-
-    // TODO:  Implement creating streams
     var streamName:String
     guard let streams = json["streams"]?.arrayValue else {
-      return Response(status:.BadRequest)
+      return Response(status:.BadRequest,
+                      json:[
+                        "message":"streams property missing"
+                      ])
     }
+
+    let device = devices.insert(name, serial:serial, location:location)
 
     for s in streams {
       streamName = s["name"]!.stringValue!
@@ -41,11 +43,15 @@ final class DeviceController {
 
   func show(request:Request) -> Response {
 
-    guard let id = request.parameters["id"], device = devices[id] else {
-      return Response(status:.NotFound)
+    guard let serial = request.parameters["serial"] else {
+      return Response(status:.BadRequest)
     }
-    
-    return Response(status: .OK, json:device.toJSON())
+
+    if let device = devices.findBySerial(serial) {
+      return Response(status: .OK, json:device.toJSON())
+    } else {
+      return Response(status:.NotFound)    
+    }
 
   }
 
