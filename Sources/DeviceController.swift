@@ -44,9 +44,14 @@ final class DeviceController {
                       ])
     }
 
-    let device = devices.insert(name, serial:serial, location:location)
-
-    return Response(status:.OK, json:device.toJSON())
+    if let device = devices.insert(name, serial:serial, location:location) {
+      return Response(status:.OK, json:device.toJSON())
+    } else {
+      return Response(status:.BadRequest, json:[
+                        "message":"error creating device"
+                      ])
+    }
+    
   }
   
 
