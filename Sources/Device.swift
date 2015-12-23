@@ -27,8 +27,4 @@ class Device {
     self.location = location
     self.streams  = []
   }
-
-  func addStream(stream:Stream) {
-    streams.append(stream)
-  }
 }
