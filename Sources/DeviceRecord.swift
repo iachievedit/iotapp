@@ -16,15 +16,19 @@ final class DeviceRecord {
     db.close()
   }
 
-  func insert(name:String, serial:String, location:Point) -> Device {
+  func insert(name:String, serial:String, location:Point) -> Device? {
 
     let stmt = "INSERT into \(tableName) (name,serial,location) VALUES('\(name)','\(serial)',POINT(\(location["latitude"]!),\(location["longitude"]!))) RETURNING id"
     
     logmsg(stmt)
-    
-    let result = try! db.execute(stmt)
-    let id = result[0]["id"]!.string!
-    return Device(id:id, name:name, serial:serial, location:location)
+
+    do {
+      let result = try db.execute(stmt)
+      let id = result[0]["id"]!.string!
+      return Device(id:id, name:name, serial:serial, location:location)
+    } catch {
+      return nil
+    }
   }
 
   func findBySerial(serial:String) -> Device? {

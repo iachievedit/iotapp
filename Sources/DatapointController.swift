@@ -10,9 +10,6 @@ final class DatapointController {
   let streams    = try! StreamRecord()
   let datapoints = try! DatapointRecord()
 
-  //
-  //
-  //
   func create(request:Request) -> Response {
 
     logmsg("ENTRY")
