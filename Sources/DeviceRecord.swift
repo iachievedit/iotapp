@@ -23,6 +23,7 @@ final class DeviceRecord {
     logmsg(stmt)
 
     do {
+      try db.open()
       let result = try db.execute(stmt)
       let id = result[0]["id"]!.string!
       return Device(id:id, name:name, serial:serial, location:location)
@@ -36,17 +37,22 @@ final class DeviceRecord {
     let stmt   = "SELECT * from devices where serial = '\(serial)'"
     
     logmsg(stmt)
-    
-    let result = try! db.execute(stmt)
-    if result.count > 0 {
-      let id = result[0]["id"]!.string!
-      let name = result[0]["name"]!.string!
-      let serial = result[0]["serial"]!.string!
-      let location = result[0]["location"]!.string!
-      let locationAsPoint = pointFromString(location)
-      return Device(id:id, name:name, serial:serial, location:locationAsPoint)
+  
+    do {
+      try db.open()
+      let result = try! db.execute(stmt)
+      if result.count > 0 {
+        let id = result[0]["id"]!.string!
+        let name = result[0]["name"]!.string!
+        let serial = result[0]["serial"]!.string!
+        let location = result[0]["location"]!.string!
+        let locationAsPoint = pointFromString(location)
+        return Device(id:id, name:name, serial:serial, location:locationAsPoint)
+      }
+      return nil
+    } catch {
+      return nil
     }
-    return nil
   }
-
 }
+

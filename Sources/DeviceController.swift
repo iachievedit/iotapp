@@ -50,8 +50,9 @@ final class DeviceController {
     if let device = devices.insert(name, serial:serial, location:location) {
       for s in streams {
         streamName = s["name"]!.stringValue!
-        let stream = self.streams.insert(streamName, deviceId:device.id)
-        device.addStream(stream)
+        if let stream = self.streams.insert(streamName, deviceId:device.id) {
+         device.addStream(stream)
+       }
       }
       
       return Response(status:.OK, json:device.toJSON())

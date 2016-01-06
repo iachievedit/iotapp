@@ -16,15 +16,21 @@ final class StreamRecord {
     db.close()
   }
 
-  func insert(name:String, deviceId:String) -> Stream {
+  func insert(name:String, deviceId:String) -> Stream? {
 
     let stmt = "INSERT into \(tableName) (name, device_id) VALUES('\(name)', '\(deviceId)') RETURNING id"
     
     logmsg(stmt)
 
-    let result = try! db.execute(stmt)
-    let id     = result[0]["id"]!.string!
-    return Stream(id:id, name:name)
+    do {
+      try db.open()
+      let result = try! db.execute(stmt)
+      let id     = result[0]["id"]!.string!
+      return Stream(id:id, name:name)
+    } catch {
+      return nil
+    }
+
            
   }
 
@@ -33,14 +39,20 @@ final class StreamRecord {
     
     logmsg(stmt)
 
-    let result = try! db.execute(stmt)
+    do {
+      try db.open()
+      let result = try! db.execute(stmt)
     
-    if result.count > 0 {
+      if result.count > 0 {
         return Stream(id:result[0]["id"]!.string!,
                       name:result[0]["name"]!.string!)
-    } else {
+      } else {
+      return nil
+      }
+    } catch {
       return nil
     }
+    
   }
 
 }
