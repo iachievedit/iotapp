@@ -22,6 +22,7 @@ final class DatapointRecord {
     logmsg("insert datapoint:  \(stmt)")
 
     do {
+      try db.open()
       let result = try db.execute(stmt)
       let id     = result[0]["id"]!.string!
       let inserted_at = result[0]["inserted_at"]!.string!
@@ -40,6 +41,7 @@ final class DatapointRecord {
 
     var datapoints:[Datapoint] = []
     do {
+      try db.open()
       let results = try db.execute(stmt)
       for result in results {
         let id          = result["id"]!.string!
